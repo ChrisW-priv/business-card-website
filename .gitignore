@@ -1,0 +1,10 @@
+.pi/
+node_modules/
+dist/
+.astro/
+.impeccable/questions/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/critique/snapshots/
+.impeccable/live/sessions/
+.impeccable/config.local.json
