@@ -1,0 +1,170 @@
+---
+import { copy, locales, pathFor, type Language, type Page } from '../i18n';
+import LanguagePicker from '../components/LanguagePicker.astro';
+import ExternalLinkIcon from '../components/ExternalLinkIcon.astro';
+interface Props { lang: Language; title: string; description: string; page?: Page; }
+const { lang, title, description, page = 'home' } = Astro.props;
+const t = copy[lang];
+const homePath = pathFor(lang, 'home');
+const socials = [
+  { label: t.email, href: 'mailto:chris.watras@gmail.com', icon: 'email' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/krzysztof-watras/', icon: 'linkedin' },
+  { label: 'GitHub', href: 'https://github.com/ChrisW-priv', icon: 'github' },
+];
+const navigation = [
+  { label: t.whoami, href: `${homePath}#whoami` },
+  { label: t.workNav, href: `${homePath}#work` },
+  { label: t.contactNav, href: `${homePath}#contact` },
+];
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f3ed" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    {locales.map(locale => <link rel="alternate" hreflang={locale.code} href={`https://krzysztofwatras.pl${pathFor(locale.code, page)}`} />)}
+    <link rel="preload" href="/fonts/ibm-plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline define:vars={{ supportedLocales: locales.map(locale => ({ code: locale.code, prefix: locale.prefix })) }}>
+      try {
+        const saved = localStorage.getItem('site-language');
+        const preferred = (navigator.languages?.[0] || navigator.language || '').toLowerCase().split('-')[0];
+        const chosen = supportedLocales.find(locale => locale.code === saved) || (!saved && supportedLocales.find(locale => locale.code === preferred));
+        if (chosen?.prefix && (location.pathname === '/' || location.pathname === '/blog/')) {
+          location.replace(chosen.prefix + location.pathname + location.hash);
+        }
+      } catch { /* The site and explicit language links work without storage. */ }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">{t.skip}</a>
+    <div class="site-shell">
+      <aside class="sidebar" id="profile-sidebar" aria-label={t.socials}>
+        <div class="profile">
+          <a class="portrait-link" href={homePath} aria-label={t.home}>
+            <img class="portrait" src="/images/profile.webp" alt={t.portrait} width="520" height="520" />
+          </a>
+          <div class="profile-details">
+            <a class="profile-name" href={homePath}>Krzysztof<br class="desktop-break" /> Watras</a>
+            <p class="profile-location">{t.location}</p>
+          </div>
+        </div>
+        <div class="socials" aria-label={t.socials}>
+          {socials.map(({ label, href, icon }) => (
+            <a class="social-link" href={href} aria-label={label} title={label} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+              {icon === 'email' && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2" /><path d="m3.5 6 8.5 7 8.5-7" /></svg>}
+              {icon === 'linkedin' && <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.2 3a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2ZM3.4 8.6H7v12H3.4v-12Zm5.7 0h3.5v1.6h.1c.5-.9 1.7-1.9 3.5-1.9 3.8 0 4.5 2.4 4.5 5.5v6.8h-3.6v-6c0-1.4 0-3.2-2-3.2s-2.4 1.5-2.4 3.1v6.1H9.1v-12Z" /></svg>}
+              {icon === 'github' && <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.61-3.37-1.18-3.37-1.18-.46-1.17-1.12-1.48-1.12-1.48-.9-.62.07-.61.07-.61 1 .07 1.52 1.03 1.52 1.03.89 1.52 2.33 1.08 2.9.82.09-.64.35-1.08.64-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.67-.1-.26-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.66c.85 0 1.7.11 2.5.34 1.9-1.29 2.74-1.02 2.74-1.02.55 1.37.2 2.38.1 2.64.64.69 1.03 1.58 1.03 2.67 0 3.84-2.34 4.68-4.57 4.93.36.32.68.94.68 1.9v2.89c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" /></svg>}
+              <span class="social-label">{label}</span>
+              {href.startsWith('http') && <span class="external-mark"><ExternalLinkIcon /></span>}
+            </a>
+          ))}
+        </div>
+        <nav class="elsewhere" aria-label={t.elsewhere}>
+          <span class="nav-heading">{t.elsewhere}</span>
+          <a href="https://diagramik.com" target="_blank" rel="noopener noreferrer">{t.externalSite}<ExternalLinkIcon /></a>
+          <a href={pathFor(lang, 'blog')}>{t.blog}</a>
+        </nav>
+        <div class="sidebar-bottom"><LanguagePicker lang={lang} page={page} placement="up" /></div>
+      </aside>
+      <div class="content-column">
+        <header class="topbar">
+          <nav class="section-nav" aria-label={t.sectionNav}>
+            {navigation.map(({ label, href }) => <a href={href}>{label}</a>)}
+          </nav>
+        </header>
+        <main id="content"><slot /></main>
+      </div>
+    </div>
+    <script>
+      document.querySelectorAll<HTMLAnchorElement>('[data-language]').forEach(link => {
+        link.addEventListener('click', event => {
+          event.preventDefault();
+          try { localStorage.setItem('site-language', link.dataset.language!); } catch { /* Explicit routes still work. */ }
+          location.assign(link.pathname + location.hash);
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @font-face { font-family: 'IBM Plex Sans'; src: url('/fonts/ibm-plex-sans-latin.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
+  @font-face { font-family: 'IBM Plex Sans'; src: url('/fonts/ibm-plex-sans-latin-ext.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; unicode-range: U+0100-024F, U+1E00-1EFF; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('/fonts/jetbrains-mono-latin-ext.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; unicode-range: U+0100-024F, U+1E00-1EFF; }
+  :root { font-family: 'IBM Plex Sans', sans-serif; color: #2b2223; background: #fffdfa; scroll-behavior: smooth; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; min-width: 320px; }
+  a { color: inherit; text-underline-offset: .22em; }
+  a:focus-visible, button:focus-visible { outline: 2px solid #9a303d; outline-offset: 3px; }
+  ::selection { color: #fff; background: #8d2934; }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-thumb { background: #bfb3a5; border: 2px solid #fffdfa; border-radius: 12px; }
+  .skip-link { position: fixed; z-index: 20; top: -5rem; left: 1rem; padding: .8rem 1rem; background: #8d2934; color: white; }
+  .skip-link:focus { top: 1rem; }
+  .site-shell { display: grid; grid-template-columns: minmax(270px, 320px) minmax(0, 1fr); min-height: 100vh; }
+  .sidebar { position: sticky; top: 0; display: flex; flex-direction: column; align-self: start; height: 100vh; height: 100dvh; padding: clamp(2rem, 3.4vw, 3.5rem) 2.1rem 2rem; background: #f6f3ed; border-right: 1px solid #e8dfd3; }
+  .profile { display: flex; flex-direction: column; align-items: flex-start; }
+  .portrait-link { display: block; width: min(100%, 174px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: #e8ded6; border: 5px solid #fffdfa; box-shadow: 0 7px 22px #59443316; }
+  .portrait { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .profile-name { display: inline-block; margin-top: 1.6rem; font-size: 1.55rem; font-weight: 700; line-height: 1.15; letter-spacing: -.025em; text-decoration: none; }
+  .profile-name:hover { color: #8d2934; }
+  .profile-location { margin: .55rem 0 0; color: #786964; font-size: .86rem; }
+  .socials { display: grid; grid-template-columns: repeat(auto-fit, minmax(62px, 1fr)); gap: .55rem; margin-top: 2rem; width: 100%; }
+  .social-link { position: relative; min-height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3rem; padding: .5rem .3rem; border: 1px solid #e1d7ca; border-radius: 8px; text-decoration: none; color: #493536; transition: background .2s ease, border-color .2s ease, color .2s ease; }
+  .social-link:hover { background: #fffdfa; border-color: #b79255; color: #8d2934; }
+  .social-link > svg { width: 20px; height: 20px; }
+  .social-label { font: 500 .72rem 'JetBrains Mono', monospace; }
+  .external-mark { position: absolute; top: .25rem; right: .3rem; color: #896f42; font-size: .68rem; line-height: 1; }
+  .elsewhere { display: flex; flex-direction: column; margin-top: 3.2rem; }
+  .nav-heading { margin-bottom: .95rem; color: #896f42; font: 600 .68rem 'JetBrains Mono', monospace; letter-spacing: .11em; text-transform: uppercase; }
+  .elsewhere a { display: flex; justify-content: space-between; gap: 1rem; min-height: 48px; align-items: center; border-top: 1px solid #e1d7ca; font-size: .98rem; font-weight: 600; text-decoration: none; }
+  .elsewhere a:last-child { border-bottom: 1px solid #e1d7ca; }
+  .elsewhere a:hover { color: #8d2934; }
+  .elsewhere a .external-icon { color: #896f42; font-size: .9rem; }
+  .sidebar-bottom { margin-top: auto; padding-top: 2rem; width: 100%; }
+  .content-column, main { min-width: 0; }
+  .topbar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 1.1rem; min-height: 64px; padding: 0 clamp(1.5rem, 6.4vw, 7rem); border-bottom: 1px solid #e6ddd1; background: #fffdfa; }
+  .section-nav { display: flex; flex: 1; align-items: center; gap: clamp(1.25rem, 3vw, 2.5rem); overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .section-nav a { display: inline-flex; align-items: center; min-height: 52px; font-size: .88rem; font-weight: 600; text-decoration: none; }
+  .section-nav a:hover { color: #8d2934; }
+  @media (min-width: 761px) and (max-width: 1100px) {
+    .site-shell { display: block; }
+    .sidebar { position: relative; z-index: 6; display: grid; grid-template-columns: minmax(0, 1fr) 320px; column-gap: 2rem; height: auto; padding: 1.3rem clamp(2rem, 5vw, 4rem) .9rem; border-right: 0; border-bottom: 1px solid #e8dfd3; }
+    .profile { grid-column: 1; grid-row: 1; flex-direction: row; align-items: center; gap: 1.1rem; }
+    .portrait-link { width: 86px; flex: 0 0 86px; border-width: 3px; }
+    .profile-name { margin: 0; font-size: 1.3rem; }
+    .desktop-break { display: none; }
+    .profile-location { margin-top: .3rem; font-size: .79rem; }
+    .socials { grid-column: 2; grid-row: 1; margin: 0; align-self: center; }
+    .elsewhere { grid-column: 1; grid-row: 2; flex-direction: row; align-items: center; gap: 1.2rem; margin-top: .5rem; }
+    .elsewhere .nav-heading { margin: 0; }
+    .elsewhere a, .elsewhere a:last-child { min-height: 44px; border: 0; font-size: .83rem; }
+    .sidebar-bottom { grid-column: 2; grid-row: 2; justify-self: end; align-self: center; width: 190px; margin-top: .5rem; padding: 0; }
+  }
+  @media (max-width: 760px) {
+    .site-shell { display: block; }
+    .sidebar { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: .35rem; height: auto; padding: 1.4rem 1.3rem 0; border-right: 0; border-bottom: 0; }
+    .profile { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 1.15rem; }
+    .portrait-link { width: 76px; flex: 0 0 76px; border-width: 3px; }
+    .profile-name { margin: 0; font-size: 1.2rem; }
+    .desktop-break { display: none; }
+    .profile-location { margin-top: .25rem; font-size: .76rem; }
+    .socials { grid-column: 1 / -1; width: 100%; margin-top: 1.2rem; gap: .45rem; }
+    .social-link { min-height: 46px; flex-direction: row; gap: .4rem; }
+    .social-link > svg { width: 17px; height: 17px; }
+    .elsewhere { grid-column: 1; flex-direction: row; gap: .55rem; align-self: center; margin-top: .6rem; }
+    .elsewhere .nav-heading { display: none; }
+    .elsewhere a, .elsewhere a:last-child { min-height: 44px; border: 0; font-size: .77rem; }
+    .sidebar-bottom { grid-column: 2; align-self: center; width: 134px; margin-top: .6rem; padding: 0; }
+    .topbar { position: relative; min-height: 48px; padding: 0 1.3rem; }
+    .section-nav { gap: 1.4rem; }
+    .section-nav a { min-height: 48px; font-size: .84rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { :root { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+</style>

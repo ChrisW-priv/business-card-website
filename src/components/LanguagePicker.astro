@@ -1,0 +1,46 @@
+---
+import { copy, locales, pathFor, type Language, type Page } from '../i18n';
+const { lang, page, placement = 'up' } = Astro.props as { lang: Language; page: Page; placement?: 'up' | 'down' };
+const current = locales.find(locale => locale.code === lang)!;
+const t = copy[lang];
+---
+<details class:list={['language-picker', placement]}>
+  <summary aria-label={`${t.languageLabel}: ${current.nativeName}`}>
+    <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-3 2.5-4.5 5.5-4.5 9s1.5 6.5 4.5 9c3-2.5 4.5-5.5 4.5-9S15 5.5 12 3Z"/></svg>
+    <span class="picker-label">{t.languageLabel}</span>
+    <span class="picker-current">{current.nativeName}</span>
+    <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+  </summary>
+  <ul aria-label={t.languageLabel}>
+    {locales.map(locale => <li><a href={pathFor(locale.code, page)} data-language={locale.code} lang={locale.code} aria-current={locale.code === lang ? 'page' : undefined}><span>{locale.nativeName}</span><span class="language-code">{locale.code.toUpperCase()}</span></a></li>)}
+  </ul>
+</details>
+
+<style>
+  .language-picker { position: relative; width: 100%; color: #493536; }
+  summary { display: flex; align-items: center; gap: .6rem; width: 100%; min-height: 48px; padding: 0 .85rem; border: 1px solid #d8caba; border-radius: 6px; background: #fffdfa; cursor: pointer; list-style: none; font-size: .85rem; }
+  summary::-webkit-details-marker { display: none; }
+  summary:hover, details[open] summary { border-color: #b79255; color: #8d2934; }
+  summary:focus-visible, a:focus-visible { outline: 2px solid #9a303d; outline-offset: 3px; }
+  .globe { flex: 0 0 20px; width: 20px; height: 20px; color: #8d2934; }
+  .picker-label { font-weight: 600; }
+  .picker-current { margin-left: auto; font: 500 .74rem 'JetBrains Mono', monospace; }
+  .chevron { flex: 0 0 14px; width: 14px; height: 14px; transition: transform .18s ease; }
+  details[open] .chevron { transform: rotate(180deg); }
+  ul { position: absolute; z-index: 20; left: 0; width: 100%; min-width: 185px; max-height: min(60vh, 360px); overflow-y: auto; margin: 0; padding: .3rem; border: 1px solid #d8caba; border-radius: 6px; background: #fffdfa; box-shadow: 0 9px 22px #59443321; list-style: none; }
+  .up ul { bottom: calc(100% + .5rem); }
+  .down ul { top: calc(100% + .5rem); right: 0; left: auto; }
+  a { display: flex; justify-content: space-between; gap: 1rem; align-items: center; min-height: 44px; padding: .5rem .65rem; border-radius: 4px; font-size: .88rem; text-decoration: none; }
+  a:hover, a[aria-current='page'] { background: #f6f3ed; color: #8d2934; }
+  a[aria-current='page'] { font-weight: 600; }
+  .language-code { color: #806955; font: .7rem 'JetBrains Mono', monospace; }
+  @media (min-width: 761px) and (max-width: 1100px) {
+    .up ul { top: calc(100% + .5rem); bottom: auto; right: 0; left: auto; }
+  }
+  @media (max-width: 760px) {
+    summary { gap: .4rem; padding: 0 .55rem; }
+    .picker-label { display: none; }
+    .up ul { top: calc(100% + .5rem); bottom: auto; right: 0; left: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { .chevron { transition: none; } }
+</style>
