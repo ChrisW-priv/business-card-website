@@ -46,7 +46,7 @@ Distinguishing specifics, from the CV: a five-person team that integrated a ~200
 - The initial GitHub workflow should protect `main`, allow squash merges only, and publish the static site through CI.
 - The home route (`/`) is the English whoami page; `/pl/` is its Polish version. On an initial visit to an English route, browser language selects Polish for Polish-preferring visitors; an explicit language choice is remembered locally. Both routes remain directly accessible without JavaScript. Locale metadata, copy and static routes are structured so future languages can be added without a binary switch redesign; only English and Polish are offered now.
 - A reusable profile sidebar stays on standard pages unless a page has a custom layout. It contains the circular portrait, name, social links, a See also area and a language picker anchored at its bottom. It remains a full-height rail on desktop and becomes a full-width profile header on tablet and phone, leaving the horizontal section navigation available at every size.
-- Public contact channels: email, LinkedIn, and GitHub only. Do not publish the CV's phone number on the site.
+- Public contact channels: LinkedIn and GitHub only. Do not publish the CV's phone number on the site.
 - See also includes Diagramik and a local blog route (`/blog/`, `/pl/blog/`). The blog is only a coming-soon placeholder until actual content exists; do not imply posts have been published. Add other sites only when their URLs are confirmed. Internal section links point to real sections of the localized home page.
 
 ## Brand Commitments
@@ -58,7 +58,7 @@ Distinguishing specifics, from the CV: a five-person team that integrated a ~200
 
 Source material is in `../CV/`:
 
-- `../CV/src/header.tex`: name, tagline ("Backend, Data & AI Systems Engineer"), short bio, email (chris.watras@gmail.com), phone (+48 602 706 525), location (Warsaw), LinkedIn (krzysztof-watras), GitHub (ChrisW-priv).
+- `../CV/src/header.tex`: name, tagline ("Backend, Data & AI Systems Engineer"), short bio, phone (+48 602 706 525), location (Warsaw), LinkedIn (krzysztof-watras), GitHub (ChrisW-priv).
 - `../CV/src/experience.tex`: work history and selected projects.
 - `../CV/src/skills.tex`: skill summaries and tech stack.
 - `../CV/src/education.tex`: B.Sc. in Computer Science, Warsaw University of Technology (2021–2025), thesis on an LLM-powered personal assistant.
@@ -66,7 +66,7 @@ Source material is in `../CV/`:
 
 - `src/assets/profile-original.png`: user-supplied cartoon portrait, moved from `~/Downloads/profile.png`; the optimized, cropped site image is `public/images/profile.webp`.
 
-Only email, LinkedIn and GitHub are approved for public contact. The CV's phone number is source material but is not approved for publication. Do not invent further content, testimonials, or claims beyond the CV.
+Only LinkedIn and GitHub are approved for public contact. The CV's phone number is source material but is not approved for publication. Do not invent further content, testimonials, or claims beyond the CV.
 
 ## Product Principles
 
