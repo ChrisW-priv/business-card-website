@@ -1,0 +1,9 @@
+---
+import BlogPage from '../../../components/BlogPage.astro';
+import { locales, type Language } from '../../../i18n';
+export function getStaticPaths() {
+  return locales.map(locale => ({ params: { lang: locale.code } }));
+}
+const lang = Astro.params.lang as Language;
+---
+<BlogPage lang={lang} />

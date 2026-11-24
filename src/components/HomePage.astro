@@ -1,0 +1,43 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { copy, type Language } from '../i18n';
+const { lang } = Astro.props as { lang: Language };
+const t = copy[lang];
+const linkedinUrl = 'https://www.linkedin.com/in/krzysztof-watras/';
+---
+<SiteLayout lang={lang} title={t.title} description={t.description}>
+  <div class="page-content">
+    <section class="intro" id="whoami" aria-labelledby="intro-title">
+      <h1 id="intro-title">{t.greeting}<span class="period">.</span></h1>
+      <p class="intro-body">{t.bio}</p>
+    </section>
+
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div>
+        <h2 id="contact-title">{t.contactTitle}</h2>
+        <p>{t.contactIntro}</p>
+      </div>
+      <div class="contact-links">
+        <a class="contact-primary" href={linkedinUrl} target="_blank" rel="noopener noreferrer">{t.linkedinLabel} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7m0 0H8m9 0v9" /></svg></a>
+      </div>
+    </section>
+  </div>
+</SiteLayout>
+
+<style>
+  .page-content { max-width: 1260px; margin: auto; padding: 0 clamp(1.5rem, 6.4vw, 7rem); }
+  .intro { min-height: min(760px, 94vh); min-height: min(760px, 94dvh); display: flex; flex-direction: column; justify-content: center; padding: 3.2rem 0 2.8rem; scroll-margin-top: 5rem; }
+  h1 { margin: 0; max-width: 12ch; font-size: clamp(3.35rem, 6.9vw, 6rem); font-weight: 600; line-height: 1.03; letter-spacing: -.038em; text-wrap: balance; }
+  .period { color: #a63843; }
+  .intro-body { max-width: 640px; margin: 2rem 0 0; font-size: 1.05rem; line-height: 1.7; color: #5d5350; }
+  h2 { margin: 0; font-size: clamp(2.3rem, 3.6vw, 3.45rem); letter-spacing: -.035em; font-weight: 600; line-height: 1.12; }
+  .contact { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; padding: 3.2rem 0 4rem; border-top: 2px solid #aa844e; scroll-margin-top: 5rem; }
+  .contact h2 { color: #8d2934; }
+  .contact p { max-width: 460px; margin: .9rem 0 0; color: #5d5350; }
+  .contact-links { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; min-width: 0; }
+  .contact-primary { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: .9rem; padding: .93rem 1.15rem; background: #8d2934; border: 1px solid #8d2934; border-radius: 4px; color: white; font-weight: 600; text-decoration: none; transition: background .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .contact-primary:hover { background: #70202a; transform: translateY(-2px); box-shadow: 0 7px 17px #51232a30; }
+  .contact-primary svg { width: 19px; height: 19px; }
+  @media (max-width: 1050px) { .page-content { padding-inline: clamp(2rem, 5vw, 4rem); } .intro { min-height: 700px; } }
+  @media (max-width: 760px) { .page-content { padding: 0 1.5rem; } .intro { min-height: 0; padding: 4.2rem 0 3.4rem; } h1 { font-size: clamp(3.1rem, 11vw, 5rem); } .intro-body { font-size: 1rem; } .contact { align-items: flex-start; flex-direction: column; gap: 2rem; padding: 2.8rem 0 3.5rem; } }
+</style>
